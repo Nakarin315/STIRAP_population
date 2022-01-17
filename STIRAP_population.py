@@ -43,6 +43,7 @@ def odeintz(func, z0, t, **kwargs):
 sigma_Omega=0.4;
 x0=-0.73*sigma_Omega;
 def dydt(y0, t):
+    # Assume that the laser is on resonance
     delta=0;
     Delta = 0;
     Omega_S =5*np.pi*np.exp(-0.5*((t-x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
@@ -50,21 +51,20 @@ def dydt(y0, t):
     return np.dot(-1j*np.array([[0,Omega_P/2,0],
                 [Omega_P/2,Delta,Omega_S/2],
                 [0,Omega_S/2,delta]]), y0)
-
-
 t=np.linspace(-2, 2, 1000)
 Omega_S_t =5*np.pi*np.exp(-0.5*((t-x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
 Omega_P_t =5*np.pi*np.exp(-0.5*((t+x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
 
+# Assume that all of population accumulated in state |1>
 y0 = np.array([1,0,0])
 
-MA = odeintz(dydt, y0, t, rtol=1e-10,atol=1e-8)
-y1 = MA[:,0]
-y2 = MA[:,1]
-y3 = MA[:,2]
-y1 = np.real(np.conjugate(y1)*y1)
-y2 = np.real(np.conjugate(y2)*y2)
-y3 = np.real(np.conjugate(y3)*y3)
+population= odeintz(dydt, y0, t, rtol=1e-10,atol=1e-8)
+y1 = population[:,0]
+y2 = population[:,1]
+y3 = population[:,2]
+y1 = np.real(np.conjugate(y1)*y1) # Population in state |1>
+y2 = np.real(np.conjugate(y2)*y2) # Population in state |2>
+y3 = np.real(np.conjugate(y3)*y3) # Population in state |3>
 
 
 ###############################################################################
