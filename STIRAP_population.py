@@ -58,7 +58,7 @@ Omega_P_t =5*np.pi*np.exp(-0.5*((t+x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*n
 
 y0 = np.array([1,0,0])
 
-MA = odeintz(dydt, y0, t, rtol=1e-10,atol=1e-10)
+MA = odeintz(dydt, y0, t, rtol=1e-10,atol=1e-8)
 y1 = MA[:,0]
 y2 = MA[:,1]
 y3 = MA[:,2]
