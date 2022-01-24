@@ -41,19 +41,23 @@ def odeintz(func, z0, t, **kwargs):
 ###############################################################################
 ## Define pulsed Rabi frequencies
 sigma_Omega=0.4;
-x0=-0.73*sigma_Omega;
+tf =15;
+t=np.linspace(0, tf, 1000)
+t_delay=-0.73*sigma_Omega; # Time delay between two pulse
+Amp_rabi=10; # Amplitude of Rabi frequency
 def dydt(y0, t):
     # Assume that the laser is on resonance
     delta=0;
     Delta = 0;
-    Omega_S =5*np.pi*np.exp(-0.5*((t-x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
-    Omega_P =5*np.pi*np.exp(-0.5*((t+x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
-    return np.dot(-1j*np.array([[0,Omega_P/2,0],
+    Omega_S =Amp_rabi*5*np.pi*np.exp(-0.5*((t-tf/2-t_delay)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
+    Omega_P =Amp_rabi*5*np.pi*np.exp(-0.5*((t-tf/2+t_delay)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
+    A=-1j*np.array([[0,Omega_P/2,0],
                 [Omega_P/2,Delta,Omega_S/2],
-                [0,Omega_S/2,delta]]), y0)
-t=np.linspace(-2, 2, 1000)
-Omega_S_t =5*np.pi*np.exp(-0.5*((t-x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
-Omega_P_t =5*np.pi*np.exp(-0.5*((t+x0)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
+                [0,Omega_S/2,delta]]);
+    return np.dot(A, y0)
+
+Omega_S_t =Amp_rabi*5*np.pi*np.exp(-0.5*((t-tf/2-t_delay)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
+Omega_P_t =Amp_rabi*5*np.pi*np.exp(-0.5*((t-tf/2+t_delay)/sigma_Omega)**2)/(sigma_Omega*np.sqrt(2*np.pi));
 
 # Assume that all of population accumulated in state |1>
 y0 = np.array([1,0,0])
