@@ -41,10 +41,10 @@ def odeintz(func, z0, t, **kwargs):
 ###############################################################################
 ## Define pulsed Rabi frequencies
 sigma_Omega=0.4;
-tf =15;
+tf =5;
 t=np.linspace(0, tf, 1000)
 t_delay=-0.73*sigma_Omega; # Time delay between two pulse
-Amp_rabi=10; # Amplitude of Rabi frequency
+Amp_rabi=50; # Amplitude of Rabi frequency
 def dydt(y0, t):
     # Assume that the laser is on resonance
     delta=0;
@@ -62,7 +62,7 @@ Omega_P_t =Amp_rabi*5*np.pi*np.exp(-0.5*((t-tf/2+t_delay)/sigma_Omega)**2)/(sigm
 # Assume that all of population accumulated in state |1>
 y0 = np.array([1,0,0])
 
-population= odeintz(dydt, y0, t, rtol=1e-10,atol=1e-8)
+population= odeintz(dydt, y0, t, rtol=1e-12,atol=1e-10)
 y1 = population[:,0]
 y2 = population[:,1]
 y3 = population[:,2]
